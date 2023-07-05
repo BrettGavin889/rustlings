@@ -7,9 +7,8 @@
 // Execute `rustlings hint threads2` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
-
 use std::sync::Arc;
+use std::sync::Mutex;
 use std::thread;
 use std::time::Duration;
 
@@ -19,7 +18,8 @@ struct JobStatus {
 
 fn main() {
     // TODO: `Arc` isn't enough if you want a **mutable** shared state
-    let status = Arc::new(JobStatus { jobs_completed: 0 });
+    //let status = Arc::new(JobStatus { jobs_completed: 0 });
+    let status = Arc::new(Mutex::new(JobStatus { jobs_completed: 0 }));
 
     let mut handles = vec![];
     for _ in 0..10 {
@@ -27,7 +27,8 @@ fn main() {
         let handle = thread::spawn(move || {
             thread::sleep(Duration::from_millis(250));
             // TODO: You must take an action before you update a shared value
-            status_shared.jobs_completed += 1;
+            let mut local_status = status_shared.lock().unwrap();
+            local_status.jobs_completed += 1;
         });
         handles.push(handle);
     }
@@ -38,5 +39,7 @@ fn main() {
     }
 
     // TODO: Print the value of `JobStatus.jobs_completed`
-    println!("Jobs completed: {}", ???);
+    //println!("Jobs completed: {}", ???);
+    let local_status = status.lock().unwrap();
+    println!("jobs completed {}", local_status.jobs_completed);
 }

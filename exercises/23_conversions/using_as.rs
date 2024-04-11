@@ -12,10 +12,8 @@
 
 
 fn average(values: &[f64]) -> f64 {
-    //let total = values.iter().sum::<f64>();
-    //total / values.len()
-    //let total = values.iter().fold(0.0, |a, b| a + b);
     let total = values.iter().sum::<f64>();
+    //total / values.len()
     total / values.len() as f64
 }
 
